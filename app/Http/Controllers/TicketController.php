@@ -32,7 +32,7 @@ class TicketController extends Controller
 
         if (empty($validated['attendant_id'])) {
             $lessBusyAttendant = Attendant::withCount(['tickets' => function ($query) {
-                $query->where('status', '!=', 'closed'); 
+                $query->whereIn('status', ['open', 'in_progress']); 
             }])
             ->orderBy('tickets_count', 'asc')
             ->first();
