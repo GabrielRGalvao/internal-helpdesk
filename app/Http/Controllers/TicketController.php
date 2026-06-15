@@ -30,6 +30,20 @@ class TicketController extends Controller
             'attendant_id' => 'nullable|exists:attendants,id',
         ]);
 
+        if (empty($validated['attendant_id'])) {
+            $lessBusyAttendant = Attendant::withCount(['tickets' => function ($query) {
+                $query->where('status', '!=', 'closed'); 
+            }])
+            ->orderBy('tickets_count', 'asc')
+            ->first();
+
+            if ($lessBusyAttendant) {
+                $validated['attendant_id'] = $lessBusyAttendant->id;
+            }
+        }
+
+        $validated['status'] = 'open';
+
         Ticket::create($validated);
 
         return redirect()->back();
