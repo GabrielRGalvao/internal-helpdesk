@@ -30,9 +30,9 @@ class TicketController extends Controller
             'attendant_id' => 'nullable|exists:attendants,id',
         ]);
 
-        if (empty($validated['attendant_id'])) {
+        if ($request->input('assignment_mode') === 'auto' || empty($validated['attendant_id'])) {
             $lessBusyAttendant = Attendant::withCount(['tickets' => function ($query) {
-                $query->whereIn('status', ['open', 'in_progress']); 
+                $query->whereNotIn('status', ['resolved', 'closed']); 
             }])
             ->orderBy('tickets_count', 'asc')
             ->first();
@@ -45,6 +45,18 @@ class TicketController extends Controller
         $validated['status'] = 'open';
 
         Ticket::create($validated);
+
+        return redirect()->back();
+    }
+
+    public function update(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:open,in_progress,resolved,closed',
+            'attendant_id' => 'nullable|exists:attendants,id'
+        ]);
+
+        $ticket->update($validated);
 
         return redirect()->back();
     }

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->enum('priority', ['low', 'medium', 'high'])->default('low');
-            $table->enum('status', ['open', 'in_progress', 'resolved'])->default('open');
+            $table->enum('status', ['open', 'in_progress', 'resolved', 'closed'])->default('open');
             $table->foreignId('attendant_id')
                 ->nullable()
                 ->constrained('attendants')

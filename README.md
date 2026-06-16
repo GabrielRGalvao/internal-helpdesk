@@ -22,7 +22,10 @@ Aplicação web que permite que funcionários abram chamados de suporte e que a 
 
 ## Funcionalidades
 
-- **Gestão de Chamados** — Criação, listagem, visualização e edição de tickets
+- **Gestão de Chamados** — Interface de cadastro, listagem detalhada, visualização e edição dinâmica de tickets.
+- **Filtro & Busca** — Busca reativa, permite filtrar chamados por título, descrição ou nome do atendente.
+- **Data e Hora** — Exibição de data e hora da abertura do chamado no grid principal, no padrão (`pt-BR`).
+- **Modais de Ação** — Visualização de detalhes e Edição de status e troca de responsável.
 - **Níveis de Prioridade** — Classificação em baixa, média e alta prioridade
 - **Controle de Status** — Aberto, em andamento, resolvido e fechado
 - **Atribuição Manual** — Escolha direta do responsável pelo atendimento
@@ -108,43 +111,35 @@ O seeder cria os seguintes atendentes para testes:
 
 ## Roteiro de Testes
 
-**Atribuição Manual**
-Crie um ticket, selecione *Atribuição Manual* e escolha um atendente específico. O ticket aparecerá na listagem vinculado diretamente a ele.
+**Fluxo de Busca Instantânea**
+Digite uma palavra-chave (como o nome de um atendente ou termo da descrição) na barra de pesquisa localizada acima da tabela. A listagem se adaptará na mesma hora.
 
-**Distribuição Automática**
-Selecione *Atribuição Automática* ao criar um ticket. O backend contará os chamados abertos de cada atendente e atribuirá ao que tiver menos, equilibrando a carga de trabalho de forma inteligente.
+**Fluxo de Distribuição Automática**
+Crie um ticket marcando a opção Atribuição Automática. O sistema fará a contagem em tempo real e encaminhará o chamado para o operador menos sobrecarregado no momento.
+
+**Fluxo de Modificação (Edição)**
+Clique no botão Editar de qualquer chamado na lista. O modal abrirá permitindo que você altere o progresso do chamado (ex: de "Aberto" para "Em Andamento") ou mude o operador responsável pelo ticket.
 
 ---
 
 ## Estrutura do Projeto
 
 app/
-
 ├── Http/Controllers/
-
-│   ├── TicketController.php     # CRUD e lógica de atribuição automática
-
-│   └── AttendantController.php
-
+│   ├── TicketController.php     # Lógica central do CRUD, regras de negócio e distribuição
+│   └── AttendantController.php  # Fornecimento de dados dos operadores via API
 ├── Models/
-
-│   ├── Ticket.php
-
-│   └── Attendant.php
-
+│   ├── Ticket.php               # Modelo de chamados e relacionamentos
+│   └── Attendant.php            # Modelo de atendentes e escopos de contagem
 database/
-
-├── migrations/                  # Versionamento do esquema do banco
-
-└── seeders/                     # População inicial de dados
-
+├── migrations/                  # Estrutura relacional do banco de dados
+└── seeders/                     # População automatizada do ambiente de testes
 resources/
-
 └── js/
-
-└── Pages/                   # Componentes de página Vue.js
+    └── Pages/
+        └── Tickets/
+            └── Index.vue        # Interface reativa unificada
 
 ---
 
 **Autor:** Gabriel Galvão
-**Desafio:** Codificar Sistemas Tecnológicos — Avaliação Técnica Full Stack
